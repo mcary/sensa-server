@@ -45,6 +45,7 @@ end
 
 class FeederController < ApplicationController
   def initialize
+    super
     @pump = Pump.new("/dev/tty.usbmodem641")
   end
 
