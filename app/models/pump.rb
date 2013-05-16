@@ -1,6 +1,8 @@
 class Pump
-  def initialize(serial_port=SimpleSerialPort.new("/dev/tty.usbmodem641"))
-    @serial = serial_port
+  def initialize(hardware_config)
+    serial_config = hardware_config.serial_port
+    serial_class = Object.const_get(serial_config.class_name)
+    @serial = serial_class.new(serial_config.path)
   end
 
   def on

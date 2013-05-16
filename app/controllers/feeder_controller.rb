@@ -1,7 +1,7 @@
 class FeederController < ApplicationController
   def initialize
     super
-    @pump = Pump.new
+    @pump = Pump.new(Rails.configuration.hardware)
   end
 
   def index

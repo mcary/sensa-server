@@ -58,5 +58,10 @@ module Sensa
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+    config.hardware = OpenStruct.new
+    config.hardware.serial_port ||= OpenStruct.new
+    config.hardware.serial_port.path = "/dev/tty.usbmodem641"
+    config.hardware.serial_port.class_name = :SimpleSerialPort
   end
 end
