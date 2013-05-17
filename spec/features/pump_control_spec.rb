@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "FeederController", :type => :feature do
   let(:serial) { mock(:serial) }
   before :each do
-    SerialPort.stub(:new => serial)
+    SimpleSerialPort.stub(:new => serial)
   end
 
   it "feeds" do

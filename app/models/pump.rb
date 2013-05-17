@@ -1,13 +1,6 @@
 class Pump
-  attr_accessor :port, :baud
-
-  def initialize(port, baud=9600, data_bits=8, stop_bits=1, parity=SerialPort::NONE)
-    @port = port
-    @baud = baud
-    @data_bits = data_bits
-    @stop_bits = stop_bits
-    @parity = parity
-    @serial = SerialPort.new(@port, @baud, @data_bits, @stop_bits, @parity)
+  def initialize(serial_port=SimpleSerialPort.new("/dev/tty.usbmodem641"))
+    @serial = serial_port
   end
 
   def on
