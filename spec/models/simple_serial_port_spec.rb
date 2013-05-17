@@ -1,4 +1,8 @@
-require 'spec_helper'
+require 'spec_helper_no_rails'
+
+# Without Rails, we don't have autoloading
+require 'simple_serial_port'
+require 'serialport'
 
 describe SimpleSerialPort do
   subject do
