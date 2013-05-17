@@ -34,4 +34,6 @@ Sensa::Application.configure do
 
   # Expands the lines which load the assets
   config.assets.debug = true
+
+  config.hardware.serial_port.class_name = :DevSerialPort
 end
