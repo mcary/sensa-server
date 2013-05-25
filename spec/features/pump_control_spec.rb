@@ -24,11 +24,11 @@ describe "FeederController", :type => :feature do
 
   it "doses" do
     serial.should_receive(:write).with("y")
-    serial.should_receive(:write).with("n")
-    # We should probably be consistent about closing...
-    #serial.should_receive(:close)
     visit '/'
     click_button 'Dose'
-    page.should have_content 'Dosed :)'
+    page.should have_content 'Dosing...'
+    # After response is sent:
+    serial.should_receive(:write).with("n")
+    sleep 5
   end
 end

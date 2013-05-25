@@ -19,7 +19,10 @@ class FeederController < ApplicationController
   end
 
   def dose
-    @pump.dose(5)
-    redirect_to root_path, notice: "Dosed :)"
+    pump = @pump # allow the thread block to capture the pump variable
+    Thread.new do
+      pump.dose(5)
+    end
+    redirect_to root_path, notice: "Dosing..."
   end
 end
