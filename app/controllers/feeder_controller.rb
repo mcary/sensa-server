@@ -23,11 +23,14 @@ class FeederController < ApplicationController
     quantity = params[:total_quantity].to_f
     cycles = params[:number_of_cycles].to_i
     pause = params[:pause_between_cycles].to_f
+    dose = Dose.create!(params.slice(:total_quantity, :number_of_cycles, :pause_between_cycles))
     Thread.new do
-      cycles.times do
+      cycles.times do |i|
         pump.dose(quantity / cycles)
-        sleep(pause)
+        sleep(pause) if i < cycles - 1 # skip last sleep
       end
+      dose.completed_at = Time.now
+      dose.save!
     end
     redirect_to root_path, notice: "Dosing..."
   end

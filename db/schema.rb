@@ -11,6 +11,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 0) do
+ActiveRecord::Schema.define(:version => 20130526132152) do
+
+  create_table "doses", :force => true do |t|
+    t.decimal  "total_quantity"
+    t.integer  "number_of_cycles"
+    t.decimal  "pause_between_cycles"
+    t.string   "worker"
+    t.datetime "completed_at"
+    t.datetime "created_at",           :null => false
+    t.datetime "updated_at",           :null => false
+  end
 
 end
