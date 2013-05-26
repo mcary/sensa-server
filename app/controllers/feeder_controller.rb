@@ -20,8 +20,14 @@ class FeederController < ApplicationController
 
   def dose
     pump = @pump # allow the thread block to capture the pump variable
+    quantity = params[:total_quantity].to_f
+    cycles = params[:number_of_cycles].to_i
+    pause = params[:pause_between_cycles].to_f
     Thread.new do
-      pump.dose(5)
+      cycles.times do
+        pump.dose(quantity / cycles)
+        sleep(pause)
+      end
     end
     redirect_to root_path, notice: "Dosing..."
   end

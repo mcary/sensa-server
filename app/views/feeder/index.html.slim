@@ -3,5 +3,12 @@ h1 Feed Me
   = submit_tag "Feed"
 = form_tag starve_path do
   = submit_tag "Starve"
-= form_tag dose_path do
+= form_tag dose_path do |f|
+  = label_tag :total_quantity
+  = text_field_tag :total_quantity
+  = label_tag :number_of_cycles
+  = text_field_tag :number_of_cycles
+  = label_tag :pause_between_cycles
+  = text_field_tag :pause_between_cycles
+  br
   = submit_tag "Dose"
