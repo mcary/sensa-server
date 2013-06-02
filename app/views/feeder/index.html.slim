@@ -12,3 +12,18 @@ h1 Feed Me
   = text_field_tag :pause_between_cycles
   br
   = submit_tag "Dose"
+table.table.table-bordered.table-striped
+  thead
+    tr
+      th Total Quantity
+      th Number of Cycles
+      th Pause Between Cycles
+      th Completed At
+
+  tbody
+    - @doses.each do |dose|
+      tr
+        td = dose.total_quantity
+        td = dose.number_of_cycles
+        td = dose.pause_between_cycles
+        td = dose.completed_at
