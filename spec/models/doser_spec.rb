@@ -1,10 +1,20 @@
-require 'spec_helper'
+require 'spec_helper_no_rails'
+
+# Without Rails, we don't have autoloading
+require 'doser'
+require 'date'
 
 describe Doser do
-  subject { Doser.new(params, pump) }
+  subject { Doser.new(dose_class, params, pump) }
 
-  let(:dose) { Dose.first }
+  let(:dose_class) { mock(:Dose, :create! => dose) }
   let(:pump) { mock(:pump, :dose => nil) }
+  let(:dose) do
+    mock(:dose, coerced_params.merge({
+      :completed_at= => nil,
+      :save! => nil,
+    }))
+  end
   let(:params) do
     {
       total_quantity: "0.01",
@@ -12,20 +22,19 @@ describe Doser do
       pause_between_cycles: "0.02",
     }
   end
-
-  before :all do
-    # In case non-transactional tests left something, clear the table
-    Dose.destroy_all
+  let(:coerced_params) do
+    {
+      total_quantity: 0.01,
+      number_of_cycles: 2,
+      pause_between_cycles: 0.02,
+    }
   end
 
   it "saves an incomplete dose" do
-    expect { subject }.to change { Dose.count }.by(1)
+    dose_class.should_receive(:create!).with(coerced_params)
+    dose.should_not_receive(:completed_at=) # incomplete
 
-    dose.completed_at.should be_nil
-    dose.total_quantity.should == 0.01
-    dose.number_of_cycles.should == 2
-    dose.pause_between_cycles.should == 0.02
-    dose.completed_at.should be_nil # incomplete
+    subject
   end
 
   it "cycles the pump" do
@@ -34,8 +43,12 @@ describe Doser do
   end
 
   it "marks the dose completed" do
+    dose.should_receive(:completed_at=) do |val|
+      val.to_time.to_f.should be_within(0.01).of(Time.now.to_f)
+    end
+    dose.should_receive(:save!)
+
     subject.run
-    dose.reload.completed_at.to_f.should be_within(0.1).of(DateTime.now.to_f)
   end
 
   context "with invalid params" do

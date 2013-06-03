@@ -1,9 +1,9 @@
 # Administer a dose
 class Doser
-  def initialize(params, pump)
+  def initialize(klass, params, pump)
     @params = params
     @pump = pump
-    @dose = save_dose
+    @dose = save_dose(klass)
   end
 
   def run
@@ -21,8 +21,8 @@ class Doser
 
   attr_reader :params, :pump, :dose
 
-  def save_dose
-    Dose.create!(sanitize_params)
+  def save_dose(klass)
+    klass.create!(sanitize_params)
   end
 
   def sanitize_params

@@ -19,7 +19,7 @@ class FeederController < ApplicationController
   end
 
   def dose
-    Doser.new(params, @pump).start
+    Doser.new(Dose, params, @pump).start
     redirect_to root_path, notice: "Dosing..."
   end
 end
