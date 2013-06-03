@@ -17,16 +17,16 @@ describe Doser do
   end
   let(:params) do
     {
-      total_quantity: "0.01",
+      total_quantity: "0.001",
       number_of_cycles: "2",
-      pause_between_cycles: "0.02",
+      pause_between_cycles: "0.002",
     }
   end
   let(:coerced_params) do
     {
-      total_quantity: 0.01,
+      total_quantity: 0.001,
       number_of_cycles: 2,
-      pause_between_cycles: 0.02,
+      pause_between_cycles: 0.002,
     }
   end
 
@@ -38,13 +38,13 @@ describe Doser do
   end
 
   it "cycles the pump" do
-    pump.should_receive(:dose).with(0.005).twice
+    pump.should_receive(:dose).with(0.0005).twice
     subject.run
   end
 
   it "marks the dose completed" do
     dose.should_receive(:completed_at=) do |val|
-      val.to_time.to_f.should be_within(0.01).of(Time.now.to_f)
+      val.to_time.to_f.should be_within(0.001).of(Time.now.to_f)
     end
     dose.should_receive(:save!)
 
