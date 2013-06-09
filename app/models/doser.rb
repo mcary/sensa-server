@@ -11,8 +11,12 @@ class Doser
     record_completion
   end
 
+  def self.cancel
+    @@thread.kill
+  end
+
   def start
-    Thread.new do
+    @@thread = Thread.new do
       run
     end
   end

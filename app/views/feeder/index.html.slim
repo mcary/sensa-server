@@ -18,7 +18,7 @@ table.table.table-bordered.table-striped
       th Total Quantity
       th Number of Cycles
       th Pause Between Cycles
-      th Completed At
+      th Status
 
   tbody
     - @doses.each do |dose|
@@ -26,4 +26,11 @@ table.table.table-bordered.table-striped
         td = dose.total_quantity
         td = dose.number_of_cycles
         td = dose.pause_between_cycles
-        td = dose.completed_at
+        td
+          - if dose.completed_at
+            = "Completed #{dose.completed_at}"
+          - elsif dose.cancelled_at
+            = "Cancelled #{dose.cancelled_at}"
+          - else
+            = "Started #{dose.created_at} "
+            = link_to("cancel", cancel_dose_path(dose), :method => :post)

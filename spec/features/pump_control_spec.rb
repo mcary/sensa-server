@@ -65,5 +65,32 @@ describe "Feeding", :type => :feature do
       page.should have_content '2013-01-01 16:00'
       page.should have_no_content '#<Dose' # Fixed but in template
     end
+
+    it "cancels in-progress doses" do
+      serial.should_receive(:write).with("y").ordered
+      serial.should_receive(:write).with("n").ordered
+      serial.stub(:close) # Not sure we should expect this
+
+      visit '/'
+      fill_in "Total quantity", :with => "0.5"
+      fill_in "Number of cycles", :with => "1"
+      fill_in "Pause between cycles", :with => "0"
+      click_button 'Dose'
+
+      click_link "cancel"
+
+      dose = Dose.first
+      dose.cancelled_at.to_f.should be_within(0.1).of(DateTime.now.to_f)
+      page.should have_content("Cancelled dose")
+      page.should have_no_link("cancel")
+      page.should have_content(/Cancelled \d{4}-\d{2}-\d{2}/) # Status column
+
+      # Note, expectations violated in another thread will not show up here
+      #serial.should_not_receive(:write)
+
+      # Wait to make sure background task doesn't turn off again
+      sleep(0.75)
+      dose.reload.completed_at.should be_nil
+    end
   end
 end
