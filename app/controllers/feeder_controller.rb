@@ -24,11 +24,7 @@ class FeederController < ApplicationController
   end
 
   def cancel
-    @dose = Dose.find(params[:id])
-    @dose.update_attributes!(cancelled_at: Time.now)
-    Doser.cancel
-    @pump.off
+    Doser.new(Dose, params, @pump).cancel
     redirect_to root_path, notice: "Cancelled dose."
-    Rails.logger.info "Cancelled dose #{@dose.id}"
   end
 end

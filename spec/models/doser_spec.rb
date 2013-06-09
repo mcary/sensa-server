@@ -30,11 +30,14 @@ describe Doser do
     }
   end
 
-  it "saves an incomplete dose" do
+  it "saves an incomplete dose at first" do
     dose_class.should_receive(:create!).with(coerced_params)
     dose.should_not_receive(:completed_at=) # incomplete
+    subject.start
 
-    subject
+    dose.stub(:completed_at=)
+    dose_class.should_not_receive(:create!)
+    sleep(0.005)
   end
 
   it "cycles the pump" do

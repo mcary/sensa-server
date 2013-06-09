@@ -3,21 +3,25 @@ class Doser
   def initialize(klass, params, pump)
     @params = params
     @pump = pump
-    @dose = save_dose(klass)
+    @dose_class = klass
   end
 
   def run
+    save_dose
     do_dosing
-    record_completion
   end
 
-  def self.cancel
+  def cancel
+    @dose = @dose_class.find(params[:id].to_s)
+    dose.update_attributes!(cancelled_at: Time.now)
     @@thread.kill
+    pump.off
   end
 
   def start
+    save_dose
     @@thread = Thread.new do
-      run
+      do_dosing
     end
   end
 
@@ -25,8 +29,8 @@ class Doser
 
   attr_reader :params, :pump, :dose
 
-  def save_dose(klass)
-    klass.create!(sanitize_params)
+  def save_dose
+    @dose = @dose_class.create!(sanitize_params)
   end
 
   def sanitize_params
@@ -45,6 +49,11 @@ class Doser
   end
 
   def do_dosing
+    do_cycles
+    record_completion
+  end
+
+  def do_cycles
     quantity = dose.total_quantity
     cycles = dose.number_of_cycles
     pause = dose.pause_between_cycles
