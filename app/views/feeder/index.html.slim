@@ -1,17 +1,29 @@
-h1 Feed Me
-= form_tag feed_path do
-  = submit_tag "Feed"
-= form_tag starve_path do
-  = submit_tag "Starve"
-= form_tag dose_path do |f|
-  = label_tag :total_quantity
-  = text_field_tag :total_quantity
-  = label_tag :number_of_cycles
-  = text_field_tag :number_of_cycles
-  = label_tag :pause_between_cycles
-  = text_field_tag :pause_between_cycles
-  br
-  = submit_tag "Dose"
+.page-header
+  h1 Feed Me
+
+.form-horizontal: .control-group
+  .controls
+    .btn-group
+        = form_tag feed_path, :style => "display: inline", :class => "btn" do
+          = submit_tag "Feed", :class => "btn btn-link"
+        = form_tag starve_path, :style => "display: inline", :class => "btn" do
+          = submit_tag "Starve", :class => "btn btn-link"
+
+= form_tag dose_path, :class => "form-horizontal" do |f|
+  .control-group
+    .control-label = label_tag :total_quantity
+    .controls = text_field_tag :total_quantity
+  .control-group
+    .control-label = label_tag :number_of_cycles
+    .controls = text_field_tag :number_of_cycles
+  .control-group
+    .control-label = label_tag :pause_between_cycles
+    .controls = text_field_tag :pause_between_cycles
+  .control-group
+    .controls = submit_tag "Dose", :class => "btn btn-primary"
+
+h2 Dose History
+
 table.table.table-bordered.table-striped
   thead
     tr
