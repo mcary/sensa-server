@@ -12,7 +12,7 @@ class Doser
   end
 
   def cancel
-    @dose = @dose_class.find(params[:id].to_s)
+    @dose = dose_class.find(params[:id].to_s)
     dose.update_attributes!(cancelled_at: Time.now)
     @@thread.kill
     pump.off
@@ -27,10 +27,10 @@ class Doser
 
   private
 
-  attr_reader :params, :pump, :dose
+  attr_reader :params, :pump, :dose, :dose_class
 
   def save_dose
-    @dose = @dose_class.create!(sanitize_params)
+    @dose = dose_class.create!(sanitize_params)
   end
 
   def sanitize_params
