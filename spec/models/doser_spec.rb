@@ -54,6 +54,20 @@ describe Doser do
     subject.run
   end
 
+  describe "for cancel" do
+    before :each do
+      dose_class.stub(:find => dose)
+    end
+
+    it "cancels an in-progress dose" do
+      subject.start
+      dose.should_receive(:update_attributes!).
+        with(hash_including(:cancelled_at))
+      pump.should_receive(:off)
+      subject.cancel
+    end
+  end
+
   context "with invalid params" do
     let(:params) do
       {
