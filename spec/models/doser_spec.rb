@@ -5,10 +5,11 @@ require 'doser'
 require 'date'
 
 describe Doser do
-  subject { Doser.new(dose_class, params, pump) }
+  subject { Doser.new(dose_class, params, pump, logger) }
 
   let(:dose_class) { mock(:Dose, :create! => dose) }
   let(:pump) { mock(:pump, :dose => nil) }
+  let(:logger) { mock(:logger, :error => nil) }
   let(:dose) do
     mock(:dose, coerced_params.merge({
       :completed_at= => nil,
@@ -85,5 +86,18 @@ describe Doser do
       subject.run
     end
   end
-end
 
+  context "on exception" do
+    let(:ex) { Exception.new("Test Error!") }
+    before :each do
+      pump.stub!(:dose).and_raise(ex)
+    end
+
+    it "logs an error" do
+      logger.should_receive(:error).with("Exception while dosing: Test Error!")
+      logger.should_receive(:error).
+        with(%r{Exception: Test Error!\n  .*app/models/doser.rb:\d}m)
+      lambda { subject.run }.should raise_error
+    end
+  end
+end

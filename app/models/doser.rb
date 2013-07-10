@@ -1,9 +1,10 @@
 # Administer a dose
 class Doser
-  def initialize(klass, params, pump)
+  def initialize(klass, params, pump, logger)
     @params = params
     @pump = pump
     @dose_class = klass
+    @logger = logger
   end
 
   def run
@@ -27,7 +28,7 @@ class Doser
 
   private
 
-  attr_reader :params, :pump, :dose, :dose_class
+  attr_reader :params, :pump, :dose, :dose_class, :logger
 
   def save_dose
     @dose = dose_class.create!(sanitize_params)
@@ -51,6 +52,10 @@ class Doser
   def do_dosing
     do_cycles
     record_completion
+  # We must catch exceptions when running in separate thread
+  rescue Exception => e
+    handle_error(e)
+    raise
   end
 
   def do_cycles
@@ -67,5 +72,10 @@ class Doser
   def record_completion
     dose.completed_at = Time.now
     dose.save!
+  end
+
+  def handle_error(e)
+    logger.error "Exception while dosing: #{e.message}"
+    logger.error "#{e.class}: #{e.message}\n  "+e.backtrace.join("\n  ")
   end
 end
