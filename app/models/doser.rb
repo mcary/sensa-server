@@ -14,7 +14,7 @@ class Doser
 
   def cancel
     @dose = dose_class.find(params[:id].to_s)
-    dose.update_attributes!(cancelled_at: Time.now)
+    dose.update_attributes!(finished_at: Time.now, status: :cancelled)
     @@thread.kill
     pump.off
   end
@@ -70,12 +70,12 @@ class Doser
   end
 
   def record_completion
-    dose.completed_at = Time.now
-    dose.save!
+    dose.update_attributes!(finished_at: Time.now, status: :completed)
   end
 
   def handle_error(e)
     logger.error "Exception while dosing: #{e.message}"
     logger.error "#{e.class}: #{e.message}\n  "+e.backtrace.join("\n  ")
+    dose.update_attributes!(finished_at: Time.now, status: :failed)
   end
 end

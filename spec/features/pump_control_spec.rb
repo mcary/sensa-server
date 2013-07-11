@@ -40,7 +40,8 @@ describe "Feeding", :type => :feature do
       click_button 'Dose'
       page.should have_content 'Dosing...'
       dose = Dose.first
-      dose.completed_at.should be_nil
+      dose.finished_at.should be_nil
+      dose.status.should be_nil
       dose.total_quantity.should == 1.0
       dose.number_of_cycles.should == 2
       dose.pause_between_cycles.should == 0.5
@@ -49,19 +50,23 @@ describe "Feeding", :type => :feature do
       serial.should_receive(:write).with("y").ordered
       serial.should_receive(:write).with("n").ordered
       sleep 1.5
-      dose.reload.completed_at.to_f.should be_within(0.1).of(DateTime.now.to_f)
+      dose.reload
+      dose.finished_at.to_f.should be_within(0.1).of(DateTime.now.to_f)
+      dose.status.should == "completed"
     end
 
     it "shows past doses" do
       Dose.create!(:total_quantity => 4.2,
                    :number_of_cycles => 3,
                    :pause_between_cycles => 40,
-                   :completed_at => Time.parse('2013-01-01 08:00'))
+                   :status => :completed,
+                   :finished_at => Time.parse('2013-01-01 08:00'))
       visit '/'
       page.should have_content 'Total quantity'
       page.should have_content '4.2'
       page.should have_content '3'
       page.should have_content '40'
+      page.should have_content 'Completed'
       page.should have_content '2013-01-01 16:00'
       page.should have_no_content '#<Dose' # Fixed but in template
     end
@@ -80,17 +85,38 @@ describe "Feeding", :type => :feature do
       click_link "cancel"
 
       dose = Dose.first
-      dose.cancelled_at.to_f.should be_within(0.1).of(DateTime.now.to_f)
-      page.should have_content("Cancelled dose")
+      dose.finished_at.to_f.should be_within(0.1).of(DateTime.now.to_f)
+      dose.status.should == "cancelled"
+      page.should have_content("Cancelled dose") # Flash
       page.should have_no_link("cancel")
-      page.should have_content(/Cancelled \d{4}-\d{2}-\d{2}/) # Status column
+      page.should have_content(dose.finished_at)
 
       # Note, expectations violated in another thread will not show up here
       #serial.should_not_receive(:write)
 
       # Wait to make sure background task doesn't turn off again
       sleep(0.75)
-      dose.reload.completed_at.should be_nil
+      dose.reload.status.should == "cancelled" # not "completed"
+    end
+
+    it "records exceptions as failures" do
+      # Force failure by mocking the dose for this one
+      # Normally feature specs will avoid mocking, but this error
+      # condition is hard to replicate otherwise.
+      Pump.any_instance.stub(:dose).and_raise Exception.new("Test Error!")
+      visit '/'
+      fill_in "Total quantity", :with => "1.0"
+      fill_in "Number of cycles", :with => "2"
+      fill_in "Pause between cycles", :with => "0.5"
+      click_button 'Dose'
+      page.should have_content 'Dosing...'
+      sleep 0.1
+      dose = Dose.first
+      dose.finished_at.to_f.should be_within(0.2).of(DateTime.now.to_f)
+      dose.status.should == 'failed'
+      dose.total_quantity.should == 1.0
+      dose.number_of_cycles.should == 2
+      dose.pause_between_cycles.should == 0.5
     end
   end
 end

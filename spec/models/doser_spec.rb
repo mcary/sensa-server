@@ -12,8 +12,7 @@ describe Doser do
   let(:logger) { mock(:logger, :error => nil) }
   let(:dose) do
     mock(:dose, coerced_params.merge({
-      :completed_at= => nil,
-      :save! => nil,
+      :update_attributes! => nil
     }))
   end
   let(:params) do
@@ -33,10 +32,10 @@ describe Doser do
 
   it "saves an incomplete dose at first" do
     dose_class.should_receive(:create!).with(coerced_params)
-    dose.should_not_receive(:completed_at=) # incomplete
+    dose.should_not_receive(:update_attributes!) # incomplete
     subject.start
 
-    dose.stub(:completed_at=)
+    dose.stub(:update_attributes!)
     dose_class.should_not_receive(:create!)
     sleep(0.005)
   end
@@ -47,10 +46,10 @@ describe Doser do
   end
 
   it "marks the dose completed" do
-    dose.should_receive(:completed_at=) do |val|
-      val.to_time.to_f.should be_within(0.001).of(Time.now.to_f)
+    dose.should_receive(:update_attributes!) do |val|
+      val[:finished_at].to_time.to_f.should be_within(0.001).of(Time.now.to_f)
+      val[:status].should == :completed
     end
-    dose.should_receive(:save!)
 
     subject.run
   end
@@ -63,7 +62,7 @@ describe Doser do
     it "cancels an in-progress dose" do
       subject.start
       dose.should_receive(:update_attributes!).
-        with(hash_including(:cancelled_at))
+        with(hash_including(:finished_at, status: :cancelled))
       pump.should_receive(:off)
       subject.cancel
     end
@@ -78,7 +77,7 @@ describe Doser do
       }
     end
 
-    pending "raises/handles it" do
+    pending "generates form validation errors" do
       subject.run
     end
 

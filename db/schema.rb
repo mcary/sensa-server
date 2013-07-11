@@ -11,17 +11,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130608230134) do
+ActiveRecord::Schema.define(:version => 20130710125720) do
 
   create_table "doses", :force => true do |t|
     t.decimal  "total_quantity"
     t.integer  "number_of_cycles"
     t.decimal  "pause_between_cycles"
     t.string   "worker"
-    t.datetime "completed_at"
-    t.datetime "cancelled_at"
     t.datetime "created_at",           :null => false
     t.datetime "updated_at",           :null => false
+    t.string   "status"
+    t.datetime "finished_at"
   end
 
 end
