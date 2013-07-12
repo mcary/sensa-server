@@ -5,7 +5,7 @@ class FeederController < ApplicationController
   end
 
   def index
-    @doses = Dose.all
+    @doses = Dose.order("id DESC")
   end
 
   def feed
