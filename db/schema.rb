@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130710125720) do
+ActiveRecord::Schema.define(:version => 20130713125606) do
 
   create_table "doses", :force => true do |t|
     t.decimal  "total_quantity"
@@ -22,6 +22,17 @@ ActiveRecord::Schema.define(:version => 20130710125720) do
     t.datetime "updated_at",           :null => false
     t.string   "status"
     t.datetime "finished_at"
+  end
+
+  create_table "readings", :force => true do |t|
+    t.decimal  "value"
+    t.integer  "sensor_id"
+    t.datetime "measured_at"
+  end
+
+  create_table "sensors", :force => true do |t|
+    t.string "name"
+    t.string "unit"
   end
 
 end
