@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130713143729) do
+ActiveRecord::Schema.define(:version => 20130714023854) do
 
   create_table "doses", :force => true do |t|
     t.decimal  "total_quantity"
@@ -29,6 +29,8 @@ ActiveRecord::Schema.define(:version => 20130713143729) do
     t.integer  "sensor_id"
     t.datetime "measured_at"
   end
+
+  add_index "readings", ["sensor_id", "measured_at"], :name => "index_readings_on_sensor_id_and_measured_at", :unique => true
 
   create_table "sensors", :force => true do |t|
     t.string "name"

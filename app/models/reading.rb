@@ -3,4 +3,5 @@ class Reading < ActiveRecord::Base
   belongs_to :sensor
   validates :measured_at, :sensor, :value, presence: true
   validates :value, numericality: true
+  validates :measured_at, uniqueness: { scope: :sensor_id }
 end
