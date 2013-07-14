@@ -1,4 +1,7 @@
 Sensa::Application.routes.draw do
+  resources :sensors
+
+
   post "feed" => "feeder#feed"
   post "starve" => "feeder#starve"
   post "dose" => "feeder#dose"
