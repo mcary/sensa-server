@@ -1,0 +1,38 @@
+<div id='chart'>
+  <svg style='height:500px'> </svg>
+</div>
+<script type="text/javascript">
+  var data = [
+    { "key": <%=raw "#{@sensor.name} (#{@sensor.unit})".to_json %>,
+      "values":
+      <%=raw @sensor.readings.map{|r|
+        [r.measured_at.to_i*1_000, r.value.to_f]
+      }.to_json %>
+    }
+  ];
+  nv.addGraph(function() {
+    var chart = nv.models.lineChart()
+                  .x(function(d) { return d[0] })
+                  // adjusting, 100% is 1.00, not 100 as it is in the data
+                  .y(function(d) { return d[1]/100 })
+                  .color(d3.scale.category10().range());
+
+     chart.xAxis
+        .tickFormat(function(d) {
+            return d3.time.format('%a %I:%M:%S %p')(new Date(d))
+          });
+
+    chart.yAxis
+        .tickFormat(d3.format(',.3%'));
+
+    d3.select('#chart svg')
+        .datum(data)
+      .transition().duration(500)
+        .call(chart);
+
+    //TODO: Figure out a good way to do this automatically
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+</script>
