@@ -8,3 +8,7 @@
 = javascript_include_tag "http://nvd3.org/nv.d3.js"
 
 = render 'chart'
+
+.btn-group
+  = link_to "Edit", edit_sensor_path(@sensor), :class => "btn"
+  = link_to "List", sensors_path, :class => "btn"

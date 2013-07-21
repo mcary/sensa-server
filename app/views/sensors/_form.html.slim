@@ -1,0 +1,26 @@
+= form_for(@sensor, :html => { :class => "form-horizontal" }) do |f|
+  - if @sensor.errors.any?
+    .alert.alert-error
+      .close data-dismiss="alert" href="#" ×
+      h2.alert-heading
+        = pluralize(@sensor.errors.count, "error")
+        |  prohibited this sensor from being saved:
+
+      ul
+        - @sensor.errors.full_messages.each do |msg|
+          li = msg
+
+  .control-group
+    .control-label = f.label :name
+    .controls = f.text_field :name
+  .control-group
+    .control-label = f.label :unit
+    .controls = f.text_field :unit
+  .control-group
+    .controls.actions
+      .btn-group
+        = f.submit :class => 'btn btn-primary'
+        = content_for :actions
+        = link_to 'List', sensors_path, :class => 'btn'
+      .btn-group
+        = content_for :dangerous_actions

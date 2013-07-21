@@ -1,0 +1,12 @@
+.page-header
+  h1 Editing sensor
+
+- content_for :actions do
+  = link_to 'Show', @sensor, :class => 'btn'
+- content_for :dangerous_actions do
+  = link_to 'Destroy', @sensor, class: 'btn btn-danger',
+      method: :delete,
+      data: { confirm: 'Delete this sensor and all its readings?' }
+
+= render 'form'
+

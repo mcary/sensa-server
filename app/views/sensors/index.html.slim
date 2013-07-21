@@ -1,0 +1,16 @@
+.page-header
+  h1 Listing sensors
+
+table.table.table-bordered.table-striped
+  thead
+    tr
+      th Name
+      th Unit
+
+  tbody
+    - @sensors.each do |sensor|
+      tr
+        td = link_to sensor.name, sensor
+        td = sensor.unit
+
+= link_to 'New Sensor', new_sensor_path, :class => "btn"
