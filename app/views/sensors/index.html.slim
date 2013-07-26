@@ -5,12 +5,21 @@ table.table.table-bordered.table-striped
   thead
     tr
       th Name
-      th Unit
+      th Value
+      th Trend
 
   tbody
     - @sensors.each do |sensor|
       tr
         td = link_to sensor.name, sensor
-        td = sensor.unit
+        td
+          - last_two = sensor.readings. \
+              order("measured_at desc").limit(2).reverse
+          = number_with_precision last_two.last.value
+          = " " + sensor.unit
+        td
+          - if last_two.length == 2
+            =raw last_two.first.value < last_two.last.value ? "&uarr;" : "&darr;"
+            = " " + number_with_precision((last_two.first.value - last_two.last.value).abs)
 
 = link_to 'New Sensor', new_sensor_path, :class => "btn"

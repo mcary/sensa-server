@@ -115,4 +115,27 @@ describe "Sensors", :type => :feature do
     end
   end
 
+  describe "#index" do
+    before :each do
+      visit "/sensors"
+    end
+
+    it "links to 'new' page" do
+      click_link "New Sensor"
+      current_path.should == "/sensors/new"
+    end
+
+    it "links to sensor page" do
+      click_link "Dissolved Oxygen"
+      current_path.should == "/sensors/#{sensor.id}"
+    end
+
+    it "shows current value" do
+      page.should have_content "0.000 %"
+    end
+
+    it "shows trend" do
+      page.should have_content "↓ 1.000"
+    end
+  end
 end
