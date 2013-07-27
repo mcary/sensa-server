@@ -1,0 +1,61 @@
+h1. Sensa Server
+
+h2. Overview
+
+Sensa Server is the command center for your bioreactor.  Monitor and control biological systems like a compost tea brewer or an algae grower with an array of sensors and actuators.
+
+h2. Developing
+
+* Clone the Git repository
+* Use Ruby 1.9.3 or 2.0
+* Run "bundle install"
+* Run "bundle exec rake db:setup db:test:prepare" to setup your dev/test databases
+* Run "bundle exec rake spec" for automated testing
+
+By default, the development environment is configured to talk to a stubbed hardware layer, so you don't have to plug real devices into your serial port.
+
+h2. Configuring
+
+Configuring for production requires setting the serial port path in config/application.rb's config.hardware.serial_port.path.  In production mode, the app is configured to use this serial port to actually talk to devices.
+
+Also, the Rails secret_token is not yet extracted to an environment variable a la dotenv.
+
+h2. Roadmap
+
+So far, we have some basic feeding and display of sensor readings.
+
+The next major feature areas are:
+
+* Collecting sensor readings from a background thread
+* Multiple actuators
+* Composite dosing sequences, for example, activate a solenoid valve before turning on the pump
+* Configurable actuators and dosing sequences
+* Network communication between the local controller and an offsite server
+
+Smaller improvements for existing functionality:
+
+* Add About and Terms pages (the page layout already has links for them)
+** The About page should give a simple overview of the product
+** The Terms should exist so that it's clear the software is licensed not sold
+* Dashboard
+** Show a min/max acceptable range for sensor values, and show whether the status is in (OK) or out (critical)
+** Show multiple axes/sensors on one graph and/or multiple graphs on the sensor index page
+** Trend and show current value over last N rather than last 2 readings
+** Extract code in index template to a presenter
+* Sensor Graphs
+** Check for JS errors on page
+** Allow the time range for sensor readings to be controlled in the UI
+** Preaggregate readings for more efficient reporting over long periods
+** Show doses on graphs with vertical line or shaded area
+* Sensors
+** Ensure sensor workflows actually delete readings as advertised in confirmation
+** Allow new sensors to be configured (by setting GPIO pin no. or serial port)
+* Address intermittent failing spec: Feeding Dosing records exceptions as failures
+* Dosing
+** Add pump status indicator
+** Limit values allowed in status field, default to started in the model
+** Paginate Doses list
+** Store thread ID in worker field and check whether it's dead when listing
+** Decide how/whether to handle multiple concurrent doses
+** Show actual amount dosed so far for each dose
+** Confirm on cancellation of an in-progress dose
