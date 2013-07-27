@@ -21,8 +21,8 @@ html
           = link_to "Sensa BioBot", "/", :class => "brand"
           div.nav-collapse
             ul.nav
-              li: a href="/" Home
-              li.active: a href="#feeder" Feeder
+              = nav_item("Sensors", :sensors)
+              = nav_item("Feeder", :feeder)
               li: a href="#about" About
     div.container
       = render "layouts/messages"

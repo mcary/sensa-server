@@ -9,7 +9,7 @@ describe "Feeding", :type => :feature do
   it "feeds" do
     serial.should_receive(:write).with("y")
     serial.should_receive(:close)
-    visit '/'
+    visit '/feeder'
     click_button 'Feed'
     page.should have_content 'Fed!'
   end
@@ -17,7 +17,7 @@ describe "Feeding", :type => :feature do
   it "starves" do
     serial.should_receive(:write).with("n")
     serial.should_receive(:close)
-    visit '/'
+    visit '/feeder'
     click_button 'Starve'
     page.should have_content 'Starved :('
   end
@@ -33,7 +33,7 @@ describe "Feeding", :type => :feature do
 
     it "doses" do
       serial.should_receive(:write).with("y")
-      visit '/'
+      visit '/feeder'
       fill_in "Total quantity", :with => "1.0"
       fill_in "Number of cycles", :with => "2"
       fill_in "Pause between cycles", :with => "0.5"
@@ -61,7 +61,7 @@ describe "Feeding", :type => :feature do
                    :pause_between_cycles => 40,
                    :status => :completed,
                    :finished_at => Time.parse('2013-01-01 08:00'))
-      visit '/'
+      visit '/feeder'
       page.should have_content 'Total quantity'
       page.should have_content '4.2'
       page.should have_content '3'
@@ -76,7 +76,7 @@ describe "Feeding", :type => :feature do
       serial.should_receive(:write).with("n").ordered
       serial.stub(:close) # Not sure we should expect this
 
-      visit '/'
+      visit '/feeder'
       fill_in "Total quantity", :with => "0.5"
       fill_in "Number of cycles", :with => "1"
       fill_in "Pause between cycles", :with => "0"
@@ -104,7 +104,7 @@ describe "Feeding", :type => :feature do
       # Normally feature specs will avoid mocking, but this error
       # condition is hard to replicate otherwise.
       Pump.any_instance.stub(:dose).and_raise Exception.new("Test Error!")
-      visit '/'
+      visit '/feeder'
       fill_in "Total quantity", :with => "1.0"
       fill_in "Number of cycles", :with => "2"
       fill_in "Pause between cycles", :with => "0.5"
