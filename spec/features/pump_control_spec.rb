@@ -50,8 +50,10 @@ describe "Feeding", :type => :feature do
       serial.should_receive(:write).with("y").ordered
       serial.should_receive(:write).with("n").ordered
       sleep 1.5
+      finish_time = DateTime.now
+      sleep 0.3
       dose.reload
-      dose.finished_at.to_f.should be_within(0.3).of(DateTime.now.to_f)
+      dose.finished_at.to_f.should be_within(0.3).of(finish_time.to_f)
       dose.status.should == "completed"
     end
 
