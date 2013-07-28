@@ -135,7 +135,7 @@ describe "Sensors", :type => :feature do
     end
 
     it "shows trend" do
-      page.should have_content "↓ 1.000"
+      page.source.should include "&darr; 1.000"
     end
   end
 end
