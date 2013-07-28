@@ -56,18 +56,19 @@ describe "Feeding", :type => :feature do
     end
 
     it "shows past doses" do
+      finished = Time.parse('2013-01-01 08:00')
       Dose.create!(:total_quantity => 4.2,
                    :number_of_cycles => 3,
                    :pause_between_cycles => 40,
                    :status => :completed,
-                   :finished_at => Time.parse('2013-01-01 08:00'))
+                   :finished_at => finished)
       visit '/feeder'
       page.should have_content 'Total quantity'
       page.should have_content '4.2'
       page.should have_content '3'
       page.should have_content '40'
       page.should have_content 'Completed'
-      page.should have_content '2013-01-01 16:00'
+      page.should have_content finished.strftime("%Y-%m-%d %H:%M:%S")
       page.should have_no_content '#<Dose' # Fixed but in template
     end
 
