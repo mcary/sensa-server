@@ -58,3 +58,9 @@ Smaller improvements for existing functionality:
 ** Decide how/whether to handle multiple concurrent doses
 ** Show actual amount dosed so far for each dose
 ** Confirm on cancellation of an in-progress dose
+
+h2. Code Status
+
+"!https://travis-ci.org/mcary/sensa-server.png?branch=master(Travis Continuous Integration Testing status)!":https://travis-ci.org/mcary/sensa-server
+
+"!https://codeclimate.com/github/mcary/sensa-server.png(Code Climate status)!":https://codeclimate.com/github/mcary/sensa-server
