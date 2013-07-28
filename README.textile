@@ -50,7 +50,6 @@ Smaller improvements for existing functionality:
 * Sensors
 ** Ensure sensor workflows actually delete readings as advertised in confirmation
 ** Allow new sensors to be configured (by setting GPIO pin no. or serial port)
-* Address intermittent failing spec: Feeding Dosing records exceptions as failures
 * Dosing
 ** Add pump status indicator
 ** Limit values allowed in status field, default to started in the model

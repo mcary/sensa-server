@@ -51,7 +51,7 @@ describe "Feeding", :type => :feature do
       serial.should_receive(:write).with("n").ordered
       sleep 1.5
       dose.reload
-      dose.finished_at.to_f.should be_within(0.1).of(DateTime.now.to_f)
+      dose.finished_at.to_f.should be_within(0.3).of(DateTime.now.to_f)
       dose.status.should == "completed"
     end
 
@@ -111,9 +111,10 @@ describe "Feeding", :type => :feature do
       fill_in "Pause between cycles", :with => "0.5"
       click_button 'Dose'
       page.should have_content 'Dosing...'
+      failure_time = DateTime.now
       sleep 0.1
       dose = Dose.first
-      dose.finished_at.to_f.should be_within(0.2).of(DateTime.now.to_f)
+      dose.finished_at.to_f.should be_within(0.2).of(failure_time.to_f)
       dose.status.should == 'failed'
       dose.total_quantity.should == 1.0
       dose.number_of_cycles.should == 2
