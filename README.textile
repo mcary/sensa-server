@@ -9,8 +9,10 @@ h2. Developing
 * Clone the Git repository
 * Use Ruby 1.9.3 or 2.0
 * Run "bundle install"
-* Run "bundle exec rake db:setup db:test:prepare" to setup your dev/test databases
+* Run "bundle exec rake db:setup" to setup your development database
+* Run "bundle exec rake db:test:prepare" to setup your test database
 * Run "bundle exec rake spec" for automated testing
+* Run "rails runner db/seed_sensor_readings.rb" to generate some sample sensor readings for development purposes (not appropriate in production)
 
 By default, the development environment is configured to talk to a stubbed hardware layer, so you don't have to plug real devices into your serial port.
 
